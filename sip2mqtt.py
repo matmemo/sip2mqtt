@@ -26,6 +26,7 @@ class Config:
 
         self.SIP_CLIENT_ADDR = self.check_env("SIP_CLIENT_ADDR")
         self.SIP_CLIENT_PORT = int(self.check_env("SIP_CLIENT_PORT", 55060))
+        self.SIP_BIND_ADDR = self.check_env("SIP_BIND_ADDR", "0.0.0.0")
 
     def check_env(self, name, default=None):
         if os.getenv(name, default) is not None:
@@ -46,7 +47,8 @@ class Config:
                 f"SIP_USER: {self.SIP_USER}\n" \
                 f"SIP_PASS: {"*" * len(self.SIP_PASS) * 2}\n" \
                 f"SIP_CLIENT_ADDR: {self.SIP_CLIENT_ADDR}\n" \
-                f"SIP_CLIENT_PORT: {self.SIP_CLIENT_PORT}"
+                f"SIP_CLIENT_PORT: {self.SIP_CLIENT_PORT}\n" \
+                f"SIP_BIND_ADDR: {self.SIP_BIND_ADDR}"
         )
 
 class MqttClient:
@@ -153,6 +155,7 @@ class SipClient:
                 password = config.SIP_PASS,
                 myIP = config.SIP_CLIENT_ADDR,
                 callCallback = self._handle_call,
+                bindIP = config.SIP_BIND_ADDR,
                 sipPort = config.SIP_CLIENT_PORT
         )
 
