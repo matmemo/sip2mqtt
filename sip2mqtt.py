@@ -172,13 +172,13 @@ class SipClient:
         logging.info("sip client stopped")
 
 if __name__ == "__main__":
-    # load config
-    load_dotenv()
-    config = Config()
-
     # setup logging
     format = "%(asctime)s: %(message)s"
     logging.basicConfig(format=format, level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S")
+
+    # load config
+    load_dotenv()
+    config = Config()
 
     logging.info("sip2mqtt initializing. Config: \n" + str(config))
 
@@ -186,7 +186,7 @@ if __name__ == "__main__":
     run_flag = True
     def stop_signals_handler(_signo, _stack_frame):
         global run_flag
-        logging.info("Received termination event")
+        logging.info("received signal to shut down")
         run_flag = False
 
     signal.signal(signal.SIGINT, stop_signals_handler)
@@ -220,7 +220,8 @@ if __name__ == "__main__":
         time.sleep(0.5)
 
     # wind down
+    logging.info("closing connections...")
     sipc.stop()
     mqttc.stop()
 
-    logging.info("Exiting")
+    logging.info("bye")
