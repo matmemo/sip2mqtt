@@ -1,4 +1,4 @@
 audioop-lts~=0.2.2
 paho-mqtt~=2.1.0
 python-dotenv~=1.1.1
-pyVoIP @ git+https://github.com/matmemo/pyVoIP.git@0d3c2d060f30369847dafb4202100a214449ef92
+pyVoIP @ git+https://github.com/matmemo/pyVoIP.git@f6a589d403f6158d8919293358f5ba715584642b
