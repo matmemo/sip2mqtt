@@ -102,8 +102,8 @@ class MqttClient:
         self.mqttc.disconnect()
         logging.info("mqtt client stopped")
 
-    def publish(self, topic, message):
-        msg_info = self.mqttc.publish(topic, message, qos=1)
+    def publish(self, topic, message, qos=0, retain=False):
+        msg_info = self.mqttc.publish(topic, message, qos=qos, retain=retain)
         self.unacked_publish.add(msg_info.mid)
 
         while len(self.unacked_publish):
@@ -111,17 +111,11 @@ class MqttClient:
 
         msg_info.wait_for_publish()
 
-    def publish_retained(self, topic, message):
-        msg_info = self.mqttc.publish(topic, message, qos=1, retain=True)
-        self.unacked_publish.add(msg_info.mid)
+    def publish_retained(self, topic, message, qos=0):
+        self.publish(topic, message, qos, retain=True)
 
-        while len(self.unacked_publish):
-            time.sleep(0.1)
-
-        msg_info.wait_for_publish()
-
-    def publish_status(self, config, status):
-        self.publish_retained(config.MQTT_BASETOPIC + "/status", status)
+    def publish_status(self, config, status, qos=0):
+        self.publish_retained(config.MQTT_BASETOPIC + "/status", status, qos)
 
 
 class SipClient:
@@ -197,7 +191,7 @@ if __name__ == "__main__":
 
     # define publisher callback for SipClient
     def publisher(message):
-        mqttc.publish(config.MQTT_BASETOPIC + "/event", message)
+        mqttc.publish(config.MQTT_BASETOPIC + "/event", message, qos=1)
 
     # setup sip client
     sipc = SipClient(publisher)

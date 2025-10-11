@@ -1,4 +1,4 @@
-FROM docker.io/library/python:3.13-trixie AS compiler
+FROM docker.io/library/python:3.13-trixie AS builder
 ENV PYTHONUNBUFFERED 1
 
 RUN <<EOF
@@ -30,7 +30,7 @@ EOF
 USER 1000:1000
 WORKDIR /app
 
-COPY --from=compiler /app/.venv /app/.venv
+COPY --from=builder /app/.venv /app/.venv
 COPY sip2mqtt.py /app/sip2mqtt.py
 
 ENV PATH="/app/.venv/bin:$PATH"
