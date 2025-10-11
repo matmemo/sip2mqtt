@@ -1,0 +1,13 @@
+services:
+    sip2mqtt:
+        image: sip2mqtt
+        build:
+            dockerfile: 'Dockerfile'
+            context: '../'
+        ports:
+            - '0.0.0.0:55060:55060/udp'
+        env_file: config.env
+        restart: unless-stopped
+        logging:
+            options:
+                max-size: 1g
