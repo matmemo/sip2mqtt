@@ -1,0 +1,8 @@
+[Unit]
+Description=sip2mqtt build
+PartOf=sip2mqtt.service
+
+[Build]
+ImageTag=localhost/sip2mqtt:latest
+SetWorkingDirectory=https://github.com/matmemo/sip2mqtt.git
+#SetWorkingDirectory=../../

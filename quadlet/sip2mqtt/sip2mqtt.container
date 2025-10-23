@@ -1,0 +1,19 @@
+[Unit]
+Description=sip2mqtt container
+PartOf=sip2mqtt.service
+
+[Container]
+ContainerName=sip2mqtt-container
+Image=localhost/sip2mqtt:latest
+EnvironmentFile=../config.env
+PublishPort=55060:55060/udp
+User=1000
+Group=1000
+
+[Service]
+Restart=always
+TimeoutStartSec=600
+
+# uncomment to enable the generated unit on startup
+# [Install]
+# WantedBy=default.target

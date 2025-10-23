@@ -1,3 +1,4 @@
 /.env
 /.experiments
 /.venv
+/**/config.env
