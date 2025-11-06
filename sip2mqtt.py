@@ -16,6 +16,7 @@ import sys
 
 from dotenv import load_dotenv
 from pyVoIP.VoIP import VoIPPhone, InvalidStateError
+from pyVoIP.VoIP.status import PhoneStatus
 
 class Config:
     def __init__(self):
@@ -163,13 +164,27 @@ class SipClient:
 
     def start(self, config):
         self.client.start()
-        self.online = True
+
+        while not self.online:
+            logging.info("sip client trying to register...")
+            self.check_online()
+            if not self.online:
+                time.sleep(5)
+
+        logging.info("sip client registration succeeded")
         logging.info("sip client started")
 
     def stop(self):
         self.client.stop()
         self.online = False
         logging.info("sip client stopped")
+
+    def check_online(self):
+        status = self.client.get_status()
+        if status is PhoneStatus.REGISTERED:
+            self.online = True
+        else:
+            self.online = False
 
 if __name__ == "__main__":
     # setup logging
@@ -217,6 +232,12 @@ if __name__ == "__main__":
     # loop until stopped
     logging.info("listening...")
     while run_flag:
+        sipc.check_online()
+        if not sipc.online:
+            logging.info("sip client offline, trying to re-register...")
+            sipc.stop()
+            sipc.start(config)
+
         time.sleep(0.5)
 
     # wind down
