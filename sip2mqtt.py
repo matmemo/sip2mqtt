@@ -174,10 +174,11 @@ class SipClient:
         logging.info("sip client registration succeeded")
         logging.info("sip client started")
 
-    def stop(self):
+    def stop(self, log = True):
         self.client.stop()
         self.online = False
-        logging.info("sip client stopped")
+        if log:
+            logging.info("sip client stopped")
 
     def check_online(self):
         status = self.client.get_status()
@@ -234,9 +235,11 @@ if __name__ == "__main__":
     while run_flag:
         sipc.check_online()
         if not sipc.online:
+            mqttc.publish_status(config, "sip client disconnected")
             logging.info("sip client offline, trying to re-register...")
-            sipc.stop()
+            sipc.stop(log = False)
             sipc.start(config)
+            mqttc.publish_status(config, "online")
 
         time.sleep(0.5)
 
